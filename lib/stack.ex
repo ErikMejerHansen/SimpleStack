@@ -10,11 +10,12 @@ defmodule Stack do
     children = [
       # Starts a worker by calling: Stack.Worker.start_link(arg1, arg2, arg3)
       # worker(Stack.Worker, [arg1, arg2, arg3]),
+      worker(SimpleStack, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Stack.Supervisor]
+    opts = [strategy: :one_for_one, name: Stack.Supervisor, max_restarts: 10]
     Supervisor.start_link(children, opts)
   end
 end
