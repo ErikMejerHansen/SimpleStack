@@ -10,18 +10,19 @@ defmodule SimpleStack do
 
   def push(element) do
     send(:stack, {:push, element})
-
     :ok
   end
 
   def pop() do
+    # Send the pop message with the PID of the current process.
     send(:stack, {:pop, self()})
 
+    # And wait for the response
     receive do
       {:ok, element} ->
         element
       _ ->
-        Logger.warn("Unexpected messaged recieved")
+        Logger.warn("Unexpected messaged received")
         :error
     end
   end
@@ -33,12 +34,12 @@ defmodule SimpleStack do
         [element | state]
       {:pop, caller} ->
 
-        [element | state] = state
+        [element | tail] = state
         send(caller, {:ok, element})
 
-        state
+        tail
       _ ->
-        Logger.warn("Unexpected messaged recieved")
+        Logger.warn("Unexpected messaged received")
         state
     end
     receiver(state)
